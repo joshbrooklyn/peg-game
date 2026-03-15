@@ -191,7 +191,7 @@ class GameBoard extends React.Component {
 			);
 		}
 
-		const boardClass = this.props.isometric ? 'isometric' : '';
+		const boardClass = '';
 
 		// Scale the board to fit on small screens.
 		// The wrapper is a plain block so CSS margin-collapsing is preserved

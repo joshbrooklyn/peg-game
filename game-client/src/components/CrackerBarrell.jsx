@@ -52,7 +52,6 @@ export default class CrackerBarrell extends React.Component {
 			pegsRemaining: null,
 			oldGames: null,
 			showHelp: false,
-			isometric: false,
 			animatingJump: null,
 		};
 	}
@@ -150,11 +149,7 @@ export default class CrackerBarrell extends React.Component {
 		this.setState({ showHelp: false });
 	}
 
-	toggleView() {
-		this.setState(prev => ({ isometric: !prev.isometric }));
-	}
-
-	handleClick(i) {
+handleClick(i) {
 		if (this.state.animatingJump) return;
 
 		let history = this.state.history.slice(0);
@@ -247,7 +242,6 @@ export default class CrackerBarrell extends React.Component {
 		const gameOver = this.state.gameOver;
 		const pegsRemaining = this.state.pegsRemaining;
 		const showHelp = this.state.showHelp;
-		const isometric = this.state.isometric;
 		const animatingJump = this.state.animatingJump;
 		const history = this.state.history;
 		const current = history[history.length - 1];
@@ -264,8 +258,6 @@ export default class CrackerBarrell extends React.Component {
 						resetGameHandler={this.resetGame.bind(this)}
 						undoMoveHandler={this.undoMove.bind(this)}
 						showHelpHandler={this.showHelp.bind(this)}
-						toggleViewHandler={this.toggleView.bind(this)}
-						isometric={isometric}
 					/>
 					<HowToPlayModal
 						open={showHelp}
@@ -277,7 +269,6 @@ export default class CrackerBarrell extends React.Component {
 						selectablePegs={selectablePegs}
 						selectableHoles={selectableHoles}
 						onClick={(i) => this.handleClick(i)}
-						isometric={isometric}
 						animatingJump={animatingJump}
 					/>
 					<GameOverPanel
