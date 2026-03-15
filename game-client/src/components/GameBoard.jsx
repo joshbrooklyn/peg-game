@@ -203,12 +203,14 @@ class GameBoard extends React.Component {
 		const scale = Math.min(1, (windowWidth - 16) / BOARD_NATURAL_WIDTH);
 		let wrapperStyle = {};
 		if (scale < 1) {
-			const cx = windowWidth / 2;
-			const tx = (cx - BOARD_CENTER_X) * scale;
 			const marginBottom = BOARD_LAYOUT_HEIGHT * (scale - 1); // negative
+			// translateX uses CSS 50% (= half of wrapper's own width) so centering is
+			// correct regardless of the wrapper's exact pixel width.
+			// With transform-origin: top left, visual_x of board center
+			//   = 330*S + (50% - 330*S) = 50% = wrapper center. ✓
 			wrapperStyle = {
-				transformOrigin: 'top center',
-				transform: `translateX(${tx}px) scale(${scale})`,
+				transformOrigin: 'top left',
+				transform: `translateX(calc(50% - ${BOARD_CENTER_X * scale}px)) scale(${scale})`,
 				marginBottom: `${marginBottom}px`,
 			};
 		}
