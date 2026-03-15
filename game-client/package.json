@@ -2,7 +2,7 @@
   "name": "cracker-barrell",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://react.joshhowe.com/cracker-barrell",
+  "homepage": "http://peg-game.joshhowe.com/",
   "dependencies": {
     "axios": "^0.19.1",
     "react": "^16.13.1",
