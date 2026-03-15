@@ -169,12 +169,14 @@ class GameBoard extends React.Component {
 		const boardClass = this.props.isometric ? 'isometric' : '';
 
 		return (
-			<div id="game-board" className={boardClass}>
-				<div className="triangle" />
-				<div className="triangle2" />
-				<div className="pegs">
-					{rows}
-					{jumpingPeg}
+			<div className="board-scale-wrapper">
+				<div id="game-board" className={boardClass}>
+					<div className="triangle" />
+					<div className="triangle2" />
+					<div className="pegs">
+						{rows}
+						{jumpingPeg}
+					</div>
 				</div>
 			</div>
 		);

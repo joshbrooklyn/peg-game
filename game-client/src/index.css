@@ -398,3 +398,52 @@ h1.ui.header {
 		0 0 16px 6px rgba(255, 210, 50, 0.6),
 		inset -1px -1px 5px rgba(200, 140, 50, 0.3);
 }
+
+/* ---- Mobile responsive ---- */
+
+@media (max-width: 920px) {
+	body {
+		overflow-x: hidden;
+	}
+
+	.ui.container.game-container {
+		width: 100% !important;
+		max-width: 100% !important;
+		margin-left: 0 !important;
+		margin-right: 0 !important;
+		border-left: none;
+		border-right: none;
+		border-radius: 0;
+		padding-bottom: 40px;
+	}
+
+	h1.ui.header {
+		font-size: 2rem;
+		padding: 14px 0 10px;
+		letter-spacing: 1px;
+	}
+
+	.ui.menu {
+		flex-wrap: wrap;
+	}
+
+	.ui.menu .item {
+		padding: 8px 10px;
+		font-size: 0.8rem;
+		letter-spacing: 0;
+	}
+
+	/* Scale the board to fit the viewport.
+	   Reference width 695px = widest element (triangle2).
+	   Reference height 682px = board layout height with flex BFC.
+	   scale() clamps at 1 so desktop-sized viewports are unaffected.
+	   Negative margin-bottom removes the whitespace left by scaling. */
+	.board-scale-wrapper {
+		display: flex;
+		justify-content: center;
+		width: 100%;
+		transform-origin: top center;
+		transform: scale(min(1, calc((100vw - 16px) / 695)));
+		margin-bottom: min(0px, calc(682px * (100vw - 16px) / 695 - 682px));
+	}
+}
