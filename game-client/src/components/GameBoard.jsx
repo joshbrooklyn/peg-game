@@ -14,6 +14,13 @@ const triangleBase = 660;
 const triangleHeight = 572;
 const pegDiameter = 66;
 
+// Natural width of the board including the shadow triangle2 (695px wide)
+const BOARD_NATURAL_WIDTH = 695;
+// Horizontal center of the board content within #game-board (half of triangleBase)
+const BOARD_CENTER_X = triangleBase / 2;
+// Layout height of #game-board after CSS margin collapse (triangle height only)
+const BOARD_LAYOUT_HEIGHT = triangleHeight;
+
 // Returns the pixel center of a hole within the .pegs container coordinate space
 function getPegPosition(holeIndex) {
 	const rowHeight = triangleHeight / 5 - 5;
@@ -56,6 +63,24 @@ function PegLocation(props) {
 }
 
 class GameBoard extends React.Component {
+
+	constructor(props) {
+		super(props);
+		this.state = { windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1200 };
+		this.handleResize = this.handleResize.bind(this);
+	}
+
+	componentDidMount() {
+		window.addEventListener('resize', this.handleResize);
+	}
+
+	componentWillUnmount() {
+		window.removeEventListener('resize', this.handleResize);
+	}
+
+	handleResize() {
+		this.setState({ windowWidth: window.innerWidth });
+	}
 
 	render() {
 		const selectablePegs = this.props.selectablePegs;
@@ -168,8 +193,28 @@ class GameBoard extends React.Component {
 
 		const boardClass = this.props.isometric ? 'isometric' : '';
 
+		// Scale the board to fit on small screens.
+		// The wrapper is a plain block so CSS margin-collapsing is preserved
+		// (prevents the peg/board misalignment that flex would cause).
+		// transform-origin is "top center" of the wrapper (100% wide).
+		// We also translateX so the board content stays horizontally centered
+		// after scaling: tx = (viewportCenter - boardCenter) * scale.
+		const { windowWidth } = this.state;
+		const scale = Math.min(1, (windowWidth - 16) / BOARD_NATURAL_WIDTH);
+		let wrapperStyle = {};
+		if (scale < 1) {
+			const cx = windowWidth / 2;
+			const tx = (cx - BOARD_CENTER_X) * scale;
+			const marginBottom = BOARD_LAYOUT_HEIGHT * (scale - 1); // negative
+			wrapperStyle = {
+				transformOrigin: 'top center',
+				transform: `translateX(${tx}px) scale(${scale})`,
+				marginBottom: `${marginBottom}px`,
+			};
+		}
+
 		return (
-			<div className="board-scale-wrapper">
+			<div className="board-scale-wrapper" style={wrapperStyle}>
 				<div id="game-board" className={boardClass}>
 					<div className="triangle" />
 					<div className="triangle2" />
