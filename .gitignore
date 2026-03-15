@@ -1,0 +1,5 @@
+node_modules
+.mcp.json
+/game-client/src/*.bak
+/game-client/src/components/*.bak
+/game-server/*.bak

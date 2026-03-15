@@ -1,0 +1,400 @@
+
+body {
+	margin-top: 0;
+	background-color: #0b0c2a;
+	background-image:
+		radial-gradient(ellipse at 25% 20%, rgba(80, 40, 180, 0.35) 0%, transparent 55%),
+		radial-gradient(ellipse at 75% 80%, rgba(20, 120, 160, 0.3) 0%, transparent 55%),
+		radial-gradient(ellipse at 50% 50%, rgba(10, 10, 50, 0.8) 0%, transparent 80%);
+	min-height: 100vh;
+}
+
+/* ---- Board wrapper ---- */
+#game-board {
+	position: relative;
+	margin: 10px auto 0;
+	width: fit-content;
+	transition: transform 0.5s ease, filter 0.5s ease;
+}
+
+#game-board.isometric {
+	transform: perspective(1000px) rotateX(30deg) rotateZ(-6deg);
+	transform-origin: center center;
+	filter: drop-shadow(0px 24px 18px rgba(0, 0, 0, 0.65));
+}
+
+/* Wood board — top face */
+.triangle {
+	width: 660px;
+	height: 572px;
+	background:
+		repeating-linear-gradient(
+			168deg,
+			transparent 0px,
+			transparent 10px,
+			rgba(100, 50, 0, 0.07) 10px,
+			rgba(100, 50, 0, 0.07) 11px
+		),
+		repeating-linear-gradient(
+			172deg,
+			transparent 0px,
+			transparent 28px,
+			rgba(255, 255, 255, 0.04) 28px,
+			rgba(255, 255, 255, 0.04) 30px
+		),
+		linear-gradient(
+			148deg,
+			#f0ca70 0%,
+			#cc9228 18%,
+			#e8b448 34%,
+			#be7a22 52%,
+			#dca03c 68%,
+			#a86818 82%,
+			#cc9830 100%
+		);
+	clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+	margin-left: 15px;
+	margin-top: 100px;
+}
+
+/* Board front edge — shifted down to show board thickness in isometric view */
+.triangle2 {
+	width: 695px;
+	height: 602px;
+	background: linear-gradient(160deg, #6a3c08 0%, #3a1c02 60%, #5a3006 100%);
+	clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+	position: absolute;
+	z-index: -1;
+	top: 15px;
+	left: -1px;
+}
+
+.pegs {
+	top: 50px;
+	left: 13px;
+	position: absolute;
+}
+
+/* ---- Title ---- */
+h1.ui.header {
+	text-align: center;
+	margin: 0;
+	padding: 28px 0 20px;
+	color: #ffe066;
+	font-size: 3.6rem;
+	font-family: 'Fredoka One', 'Georgia', cursive;
+	letter-spacing: 4px;
+	text-shadow:
+		0 2px 0 #cc8800,
+		0 4px 0 #995500,
+		0 6px 16px rgba(255, 180, 0, 0.45);
+}
+
+/* ---- Game container ---- */
+.ui.container.game-container {
+	margin-top: 0;
+	padding-top: 0;
+	padding-left: 0;
+	padding-right: 0;
+	padding-bottom: 140px;
+	margin-left: 15px;
+	width: 910px;
+	border: 4px solid #4a90d9;
+	background: linear-gradient(180deg, #0d0f2e 0%, #121435 100%);
+	border-radius: 14px;
+	box-shadow:
+		0 0 0 2px #1a2060,
+		0 0 30px rgba(74, 144, 217, 0.3),
+		0 16px 50px rgba(0, 0, 0, 0.8);
+	overflow: visible;
+}
+
+/* ---- Menu bar ---- */
+.ui.block.header {
+	background: linear-gradient(180deg, #1e2260 0%, #161848 100%);
+	border: none;
+	border-bottom: 3px solid #4a90d9;
+	padding: 0;
+	margin: 0;
+	border-radius: 0;
+}
+
+.ui.menu {
+	background: transparent;
+	border: none;
+	box-shadow: none;
+	margin: 0;
+	border-radius: 0;
+}
+
+.ui.menu .item {
+	color: #a8d4ff;
+	font-family: 'Nunito', 'Arial', sans-serif;
+	font-weight: 800;
+	font-size: 1rem;
+	letter-spacing: 0.5px;
+	padding: 14px 24px;
+	border-radius: 0;
+	transition: background 0.15s, color 0.15s;
+}
+
+.ui.menu .item:hover {
+	background: rgba(74, 144, 217, 0.25) !important;
+	color: #ffffff !important;
+}
+
+.ui.menu .item:nth-child(3) {
+	border-right: 1px solid rgba(74, 144, 217, 0.3);
+}
+
+/* ---- Jump animation ---- */
+
+@keyframes peg-jump {
+	0% {
+		transform: translate(0, 0) scale(1);
+		z-index: 100;
+	}
+	40% {
+		transform:
+			translate(calc(var(--jump-dx) * 0.5), calc(var(--jump-dy) * 0.5 - 55px))
+			scale(1.25);
+	}
+	100% {
+		transform:
+			translate(var(--jump-dx), var(--jump-dy))
+			scale(1);
+	}
+}
+
+@keyframes peg-remove {
+	0%   { opacity: 1; transform: scale(1); }
+	30%  { opacity: 0.6; transform: scale(1.1); }
+	100% { opacity: 0; transform: scale(0); }
+}
+
+#peg-location.peg-jumping {
+	animation: peg-jump 420ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+	position: relative;
+	z-index: 100;
+	pointer-events: none;
+}
+
+#peg-location.peg-removing {
+	animation: peg-remove 420ms ease-in forwards;
+	pointer-events: none;
+}
+
+/* ---- How to Play Modal ---- */
+
+.ui.modal {
+	background: linear-gradient(180deg, #0d0f2e 0%, #121435 100%);
+	border: 3px solid #4a90d9;
+	border-radius: 12px;
+	box-shadow:
+		0 0 0 1px #1a2060,
+		0 0 40px rgba(74, 144, 217, 0.3),
+		0 20px 60px rgba(0, 0, 0, 0.9);
+	color: #cce4ff;
+	font-family: 'Nunito', 'Arial', sans-serif;
+}
+
+.ui.modal > .header {
+	background: linear-gradient(180deg, #1e2260 0%, #161848 100%);
+	border-bottom: 3px solid #4a90d9;
+	border-radius: 10px 10px 0 0;
+	color: #ffe066 !important;
+	font-family: 'Fredoka One', 'Georgia', cursive !important;
+	font-size: 1.8rem !important;
+	letter-spacing: 2px;
+	padding: 18px 24px;
+}
+
+.ui.modal > .content {
+	background: transparent;
+	color: #cce4ff;
+	padding: 24px 28px;
+}
+
+.ui.modal .ui.header {
+	color: #4ab8ff;
+	font-family: 'Fredoka One', 'Georgia', cursive;
+	font-size: 1.15rem;
+	letter-spacing: 1px;
+	margin-top: 18px;
+	margin-bottom: 6px;
+	border-bottom: 1px solid rgba(74, 144, 217, 0.25);
+	padding-bottom: 4px;
+}
+
+.ui.modal p,
+.ui.modal .ui.list .item {
+	color: #cce4ff;
+	font-family: 'Nunito', 'Arial', sans-serif;
+	font-size: 0.97rem;
+	line-height: 1.6;
+}
+
+.ui.modal .ui.list .item strong {
+	color: #ffe066;
+}
+
+.ui.modal > .actions {
+	background: linear-gradient(180deg, #161848 0%, #0d0f2e 100%);
+	border-top: 2px solid rgba(74, 144, 217, 0.3);
+	border-radius: 0 0 10px 10px;
+	padding: 14px 20px;
+}
+
+.ui.modal > .actions .ui.button.primary {
+	background: linear-gradient(135deg, #2a6abf 0%, #1a4a9f 100%);
+	color: #ffffff;
+	font-family: 'Nunito', 'Arial', sans-serif;
+	font-weight: 800;
+	font-size: 1rem;
+	letter-spacing: 0.5px;
+	border: 2px solid #4a90d9;
+	border-radius: 8px;
+	padding: 10px 28px;
+	box-shadow: 0 4px 12px rgba(74, 144, 217, 0.35);
+	transition: background 0.15s, box-shadow 0.15s;
+}
+
+.ui.modal > .actions .ui.button.primary:hover {
+	background: linear-gradient(135deg, #3a7acf 0%, #2a5abf 100%);
+	box-shadow: 0 6px 18px rgba(74, 144, 217, 0.5);
+}
+
+/* Dimmer behind modal */
+.ui.dimmer {
+	background: rgba(5, 6, 30, 0.85);
+}
+
+/* ---- Pegs: isometric cylinders ---- */
+/* The downward box-shadows simulate the front face of the cylinder
+   that becomes visible when the board is tilted in isometric perspective */
+
+#peg-location {
+	height: 66px;
+	width: 66px;
+	border-radius: 50%;
+	background: radial-gradient(
+		circle at 36% 28%,
+		var(--peg-light, #ff9977) 0%,
+		var(--peg-mid,   #cc2200) 42%,
+		var(--peg-dark,  #881100) 100%
+	);
+	outline: none;
+	border: none;
+	box-shadow:
+		0 8px  0 2px var(--peg-shadow1, #882200),
+		0 14px 0 1px var(--peg-shadow2, #661100),
+		0 18px 8px rgba(0, 0, 0, 0.7),
+		inset 0 1px 5px rgba(255, 210, 190, 0.35);
+	cursor: default;
+	transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+/* Empty hole — drilled into the wood */
+#peg-location.empty {
+	background: radial-gradient(
+		circle at 38% 36%,
+		#1e0c00 0%,
+		#090300 55%,
+		#000000 100%
+	);
+	border: none;
+	height: 50px;
+	width: 50px;
+	margin-top: 8px;
+	margin-left: 8px;
+	box-shadow:
+		inset 3px 5px 12px rgba(0, 0, 0, 1),
+		inset -1px -1px 5px rgba(180, 110, 30, 0.2),
+		1px 2px 3px rgba(210, 150, 60, 0.2);
+	border-radius: 50%;
+	cursor: default;
+}
+
+/* Selected peg — lifted off the board, glows in its own color */
+#peg-location.from-selected {
+	background: radial-gradient(
+		circle at 36% 28%,
+		var(--peg-light, #ff9977) 0%,
+		var(--peg-mid,   #cc2200) 42%,
+		var(--peg-dark,  #881100) 100%
+	);
+	box-shadow:
+		0 0 14px 6px var(--peg-light, #ff9977),
+		0 10px 0 2px var(--peg-shadow1, #994400),
+		0 17px 0 1px var(--peg-shadow2, #773300),
+		0 22px 10px rgba(0, 0, 0, 0.7),
+		inset 0 1px 5px rgba(255, 255, 255, 0.25);
+	transform: scale(1.1) translateY(-6px);
+	cursor: default;
+}
+
+/* Selectable pegs — inherit color from CSS vars */
+#peg-location.from-selectable {
+	background: radial-gradient(
+		circle at 36% 28%,
+		var(--peg-light, #ff9977) 0%,
+		var(--peg-mid,   #cc2200) 42%,
+		var(--peg-dark,  #881100) 100%
+	);
+	box-shadow:
+		0 8px  0 2px var(--peg-shadow1, #882200),
+		0 14px 0 1px var(--peg-shadow2, #661100),
+		0 18px 8px rgba(0, 0, 0, 0.7),
+		inset 0 1px 5px rgba(255, 210, 190, 0.35);
+}
+
+#peg-location.from-selectable:hover {
+	cursor: pointer;
+	background: radial-gradient(
+		circle at 36% 28%,
+		var(--peg-light, #ffbb99) 0%,
+		var(--peg-mid,   #dd3311) 42%,
+		var(--peg-dark,  #991100) 100%
+	);
+	box-shadow:
+		0 10px 0 2px var(--peg-shadow1, #993300),
+		0 16px 0 1px var(--peg-shadow2, #771100),
+		0 20px 10px rgba(0, 0, 0, 0.7),
+		inset 0 1px 5px rgba(255, 220, 200, 0.45);
+	transform: scale(1.06) translateY(-4px);
+}
+
+/* Selectable holes — glowing targets */
+#peg-location.to-selectable {
+	background: radial-gradient(
+		circle at 38% 36%,
+		#221000 0%,
+		#090300 55%,
+		#000000 100%
+	);
+	border: 2px solid #ffaa00;
+	height: 50px;
+	width: 50px;
+	margin-top: 8px;
+	margin-left: 8px;
+	box-shadow:
+		inset 3px 5px 12px rgba(0, 0, 0, 1),
+		0 0 10px 3px rgba(255, 170, 0, 0.45),
+		inset -1px -1px 5px rgba(180, 110, 30, 0.2);
+	border-radius: 50%;
+}
+
+#peg-location.to-selectable:hover {
+	cursor: pointer;
+	background: radial-gradient(
+		circle at 38% 36%,
+		#332200 0%,
+		#140800 55%,
+		#050200 100%
+	);
+	border-color: #ffdd44;
+	box-shadow:
+		inset 3px 5px 12px rgba(0, 0, 0, 1),
+		0 0 16px 6px rgba(255, 210, 50, 0.6),
+		inset -1px -1px 5px rgba(200, 140, 50, 0.3);
+}

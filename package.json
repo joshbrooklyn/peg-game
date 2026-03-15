@@ -1,0 +1,24 @@
+{
+  "name": "cracker-barrell",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"cd game-server && forever -w server.js\" \"cd game-client && npm start\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joshbrooklyn/cracker-barrell.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joshbrooklyn/cracker-barrell/issues"
+  },
+  "homepage": "https://github.com/joshbrooklyn/cracker-barrell#readme",
+  "dependencies": {
+    "concurrently": "^5.1.0"
+  }
+}
