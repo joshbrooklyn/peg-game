@@ -16,10 +16,6 @@ const pegDiameter = 66;
 
 // Natural width of the board including the shadow triangle2 (695px wide)
 const BOARD_NATURAL_WIDTH = 695;
-// Horizontal center of the board content within #game-board (half of triangleBase)
-const BOARD_CENTER_X = triangleBase / 2;
-// Layout height of #game-board after CSS margin collapse (triangle height only)
-const BOARD_LAYOUT_HEIGHT = triangleHeight;
 
 // Returns the pixel center of a hole within the .pegs container coordinate space
 function getPegPosition(holeIndex) {
@@ -66,12 +62,14 @@ class GameBoard extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = { windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1200 };
+		this.state = { wrapperWidth: typeof window !== 'undefined' ? window.innerWidth : 1200 };
+		this.wrapperRef = React.createRef();
 		this.handleResize = this.handleResize.bind(this);
 	}
 
 	componentDidMount() {
 		window.addEventListener('resize', this.handleResize);
+		this.handleResize();
 	}
 
 	componentWillUnmount() {
@@ -79,7 +77,9 @@ class GameBoard extends React.Component {
 	}
 
 	handleResize() {
-		this.setState({ windowWidth: window.innerWidth });
+		if (this.wrapperRef.current) {
+			this.setState({ wrapperWidth: this.wrapperRef.current.clientWidth });
+		}
 	}
 
 	render() {
@@ -199,25 +199,16 @@ class GameBoard extends React.Component {
 		// transform-origin is "top center" of the wrapper (100% wide).
 		// We also translateX so the board content stays horizontally centered
 		// after scaling: tx = (viewportCenter - boardCenter) * scale.
-		const { windowWidth } = this.state;
-		const scale = Math.min(1, (windowWidth - 16) / BOARD_NATURAL_WIDTH);
-		let wrapperStyle = {};
-		if (scale < 1) {
-			const marginBottom = BOARD_LAYOUT_HEIGHT * (scale - 1); // negative
-			// translateX uses CSS 50% (= half of wrapper's own width) so centering is
-			// correct regardless of the wrapper's exact pixel width.
-			// With transform-origin: top left, visual_x of board center
-			//   = 330*S + (50% - 330*S) = 50% = wrapper center. ✓
-			wrapperStyle = {
-				transformOrigin: 'top left',
-				transform: `translateX(calc(50% - ${BOARD_CENTER_X * scale}px)) scale(${scale})`,
-				marginBottom: `${marginBottom}px`,
-			};
-		}
+		const { wrapperWidth } = this.state;
+		const scale = Math.min(1, (wrapperWidth - 16) / BOARD_NATURAL_WIDTH);
+		// zoom scales the element AND its layout dimensions (unlike transform which only
+		// affects visual rendering). This means margin: auto centering still works, and
+		// there is no whitespace to compensate for below the board.
+		const boardStyle = scale < 1 ? { zoom: scale } : {};
 
 		return (
-			<div className="board-scale-wrapper" style={wrapperStyle}>
-				<div id="game-board" className={boardClass}>
+			<div className="board-scale-wrapper" ref={this.wrapperRef}>
+				<div id="game-board" className={boardClass} style={boardStyle}>
 					<div className="triangle" />
 					<div className="triangle2" />
 					<div className="pegs">

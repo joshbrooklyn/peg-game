@@ -3,3 +3,4 @@ node_modules
 /game-client/src/*.bak
 /game-client/src/components/*.bak
 /game-server/*.bak
+/game-client/build

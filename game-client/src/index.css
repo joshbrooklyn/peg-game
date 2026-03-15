@@ -433,9 +433,12 @@ h1.ui.header {
 		letter-spacing: 0;
 	}
 
-	/* Scale and centering are applied via inline style computed in GameBoard.jsx.
-	   overflow-x hidden on body (above) prevents layout overflow from showing a scrollbar. */
+	/* Scale is applied via inline style computed in GameBoard.jsx.
+	   overflow-x hidden on body (above) prevents layout overflow from showing a scrollbar.
+	   margin-left centers the 660px board using a negative margin (unlike auto, negative
+	   margins are allowed, so this works even when the board is wider than the container). */
 	.board-scale-wrapper {
 		width: 100%;
 	}
+
 }
