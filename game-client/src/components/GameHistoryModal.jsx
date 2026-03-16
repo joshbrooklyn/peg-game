@@ -77,30 +77,45 @@ class GameHistoryModal extends React.Component {
 			<p style={{ color: '#a8d4ff', textAlign: 'center', margin: '24px 0' }}>No games played yet. Get out there!</p>
 		);
 		return (
-			<Table inverted celled style={{ background: 'transparent' }}>
-				<Table.Header>
-					<Table.Row>
-						<Table.HeaderCell>Date</Table.HeaderCell>
-						<Table.HeaderCell>Pegs Left</Table.HeaderCell>
-						<Table.HeaderCell>Result</Table.HeaderCell>
-					</Table.Row>
-				</Table.Header>
-				<Table.Body>
+			<>
+				{/* Desktop table */}
+				<Table inverted celled className="history-desktop-table" style={{ background: 'transparent' }}>
+					<Table.Header>
+						<Table.Row>
+							<Table.HeaderCell>Date</Table.HeaderCell>
+							<Table.HeaderCell>Score</Table.HeaderCell>
+							<Table.HeaderCell>Result</Table.HeaderCell>
+						</Table.Row>
+					</Table.Header>
+					<Table.Body>
+						{history.map(entry => {
+							const { icon, color, label } = getScoreInfo(entry.score);
+							return (
+								<Table.Row key={entry.gameHistoryId}>
+									<Table.Cell>{formatDate(entry.date)}</Table.Cell>
+									<Table.Cell style={{ color: '#ffe066', fontWeight: 800 }}>{entry.score} pts</Table.Cell>
+									<Table.Cell><Icon name={icon} color={color} />{label}</Table.Cell>
+								</Table.Row>
+							);
+						})}
+					</Table.Body>
+				</Table>
+				{/* Mobile cards */}
+				<div className="history-cards">
 					{history.map(entry => {
 						const { icon, color, label } = getScoreInfo(entry.score);
 						return (
-							<Table.Row key={entry.gameHistoryId}>
-								<Table.Cell>{formatDate(entry.date)}</Table.Cell>
-								<Table.Cell style={{ color: '#ffe066', fontWeight: 800 }}>{entry.score} pts</Table.Cell>
-								<Table.Cell>
-									<Icon name={icon} color={color} />
-									{label}
-								</Table.Cell>
-							</Table.Row>
+							<div key={entry.gameHistoryId} className="history-card">
+								<span className="history-card-date">{formatDate(entry.date)}</span>
+								<span className="history-card-result">
+									<Icon name={icon} color={color} />{label}
+								</span>
+								<span className="history-card-score">{entry.score} pts</span>
+							</div>
 						);
 					})}
-				</Table.Body>
-			</Table>
+				</div>
+			</>
 		);
 	}
 
@@ -117,49 +132,68 @@ class GameHistoryModal extends React.Component {
 		const medals = ['🥇', '🥈', '🥉'];
 
 		return (
-			<Table inverted celled style={{ background: 'transparent' }}>
-				<Table.Header>
-					<Table.Row>
-						<Table.HeaderCell style={{ width: '40px' }}>#</Table.HeaderCell>
-						<Table.HeaderCell>Player</Table.HeaderCell>
-						<Table.HeaderCell><Icon name="trophy" color="yellow" />Genius</Table.HeaderCell>
-						<Table.HeaderCell>Games</Table.HeaderCell>
-						<Table.HeaderCell>Best</Table.HeaderCell>
-					</Table.Row>
-				</Table.Header>
-				<Table.Body>
+			<>
+				{/* Desktop table */}
+				<Table inverted celled className="history-desktop-table" style={{ background: 'transparent' }}>
+					<Table.Header>
+						<Table.Row>
+							<Table.HeaderCell style={{ width: '40px' }}>#</Table.HeaderCell>
+							<Table.HeaderCell>Player</Table.HeaderCell>
+							<Table.HeaderCell><Icon name="trophy" color="yellow" />Genius</Table.HeaderCell>
+							<Table.HeaderCell>Games</Table.HeaderCell>
+							<Table.HeaderCell>Best</Table.HeaderCell>
+						</Table.Row>
+					</Table.Header>
+					<Table.Body>
+						{leaderboard.map((entry, idx) => {
+							const isMe = entry.userId === userId;
+							return (
+								<Table.Row key={entry.userId} style={isMe ? { background: 'rgba(74, 144, 217, 0.15)' } : undefined}>
+									<Table.Cell style={{ color: '#a8d4ff', textAlign: 'center' }}>
+										{idx < 3 ? medals[idx] : idx + 1}
+									</Table.Cell>
+									<Table.Cell style={isMe ? { color: '#ffe066', fontWeight: 800 } : undefined}>
+										{entry.userName}{isMe && <span style={{ color: '#a8d4ff', fontWeight: 400, fontSize: '0.8em', marginLeft: 6 }}>(you)</span>}
+									</Table.Cell>
+									<Table.Cell style={{ color: '#ffe066', fontWeight: 800, textAlign: 'center' }}>{entry.geniusCount}</Table.Cell>
+									<Table.Cell style={{ color: '#cce4ff', textAlign: 'center' }}>{entry.totalGames}</Table.Cell>
+									<Table.Cell style={{ textAlign: 'center' }}>
+										{entry.bestScore != null ? (
+											<><Icon name={getScoreInfo(entry.bestScore).icon} color={getScoreInfo(entry.bestScore).color} />{entry.bestScore} pts</>
+										) : '—'}
+									</Table.Cell>
+								</Table.Row>
+							);
+						})}
+					</Table.Body>
+				</Table>
+				{/* Mobile cards */}
+				<div className="history-cards">
 					{leaderboard.map((entry, idx) => {
 						const isMe = entry.userId === userId;
 						return (
-							<Table.Row
-								key={entry.userId}
-								style={isMe ? { background: 'rgba(74, 144, 217, 0.15)' } : undefined}
-							>
-								<Table.Cell style={{ color: '#a8d4ff', textAlign: 'center' }}>
-									{idx < 3 ? medals[idx] : idx + 1}
-								</Table.Cell>
-								<Table.Cell style={isMe ? { color: '#ffe066', fontWeight: 800 } : undefined}>
-									{entry.userName}{isMe && <span style={{ color: '#a8d4ff', fontWeight: 400, fontSize: '0.8em', marginLeft: 6 }}>(you)</span>}
-								</Table.Cell>
-								<Table.Cell style={{ color: '#ffe066', fontWeight: 800, textAlign: 'center' }}>
-									{entry.geniusCount}
-								</Table.Cell>
-								<Table.Cell style={{ color: '#cce4ff', textAlign: 'center' }}>
-									{entry.totalGames}
-								</Table.Cell>
-								<Table.Cell style={{ textAlign: 'center' }}>
-									{entry.bestScore != null ? (
-										<>
-											<Icon name={getScoreInfo(entry.bestScore).icon} color={getScoreInfo(entry.bestScore).color} />
-											{entry.bestScore} pts
-										</>
-									) : '—'}
-								</Table.Cell>
-							</Table.Row>
+							<div key={entry.userId} className={`leaderboard-card${isMe ? ' is-me' : ''}`}>
+								<div className="leaderboard-card-top">
+									<span className="leaderboard-card-rank">{idx < 3 ? medals[idx] : idx + 1}</span>
+									<span className="leaderboard-card-name">
+										{entry.userName}
+										{isMe && <span className="leaderboard-card-you">(you)</span>}
+									</span>
+								</div>
+								<div className="leaderboard-card-stats">
+									<span><Icon name="trophy" color="yellow" />{entry.geniusCount} genius</span>
+									<span style={{ color: '#a8d4ff' }}>{entry.totalGames} games</span>
+									<span>
+										{entry.bestScore != null
+											? <><Icon name={getScoreInfo(entry.bestScore).icon} color={getScoreInfo(entry.bestScore).color} />{entry.bestScore} pts</>
+											: '—'}
+									</span>
+								</div>
+							</div>
 						);
 					})}
-				</Table.Body>
-			</Table>
+				</div>
+			</>
 		);
 	}
 
@@ -168,7 +202,7 @@ class GameHistoryModal extends React.Component {
 		const { tab } = this.state;
 
 		return (
-			<Modal open={open} onClose={onClose} size="small">
+			<Modal open={open} onClose={onClose} size="small" className="history-modal">
 				<Header icon={tab === 'history' ? 'history' : 'chart bar'} content={tab === 'history' ? `${playerName}'s History` : 'Leaderboard'} />
 				<Modal.Content style={{ padding: '0' }}>
 					<div className="history-tab-bar">

@@ -141,36 +141,90 @@ h1.ui.header {
 	border-right: 1px solid rgba(74, 144, 217, 0.3);
 }
 
-/* ---- Player name ---- */
+/* ---- Player avatar ---- */
 
-.player-name-item {
-	cursor: default !important;
-	color: #ffe066 !important;
+.player-name-badge {
+	display: none;
 }
 
-.player-name-item:hover {
-	background: transparent !important;
-	color: #ffe066 !important;
+.player-name-desktop {
+	display: flex !important;
 }
 
-.player-name {
+.player-avatar-menu-item {
+	padding: 6px 12px !important;
+}
+
+.player-avatar-wrap {
+	position: relative;
+}
+
+.player-avatar-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 34px;
+	height: 34px;
+	background: transparent;
+	border: 2px solid rgba(74, 144, 217, 0.5);
+	border-radius: 50%;
+	color: #a8d4ff;
+	cursor: pointer;
+	padding: 4px;
+	transition: border-color 0.15s, color 0.15s;
+}
+
+.player-avatar-btn:hover,
+.player-avatar-btn.open {
+	border-color: #ffe066;
+	color: #ffe066;
+}
+
+.player-avatar-btn svg {
+	width: 100%;
+	height: 100%;
+}
+
+.player-avatar-dropdown {
+	position: absolute;
+	top: calc(100% + 8px);
+	right: 0;
+	min-width: 140px;
+	background: linear-gradient(180deg, #1e2260 0%, #161848 100%);
+	border: 2px solid #4a90d9;
+	border-radius: 8px;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+	overflow: hidden;
+	z-index: 1001;
+}
+
+.player-avatar-name {
+	padding: 10px 14px 6px;
 	font-family: 'Fredoka One', 'Georgia', cursive;
+	font-size: 1rem;
 	color: #ffe066;
 	letter-spacing: 1px;
-	margin-right: 8px;
+	border-bottom: 1px solid rgba(74, 144, 217, 0.3);
 }
 
-.change-name-link {
-	font-size: 0.72rem;
-	color: rgba(168, 212, 255, 0.6);
-	cursor: pointer;
-	text-transform: lowercase;
-	letter-spacing: 0.5px;
-	transition: color 0.15s;
-}
-
-.change-name-link:hover {
+.player-avatar-change {
+	display: block;
+	width: 100%;
+	padding: 8px 14px;
+	background: transparent;
+	border: none;
 	color: #a8d4ff;
+	font-family: 'Nunito', 'Arial', sans-serif;
+	font-size: 0.9rem;
+	font-weight: 700;
+	text-align: left;
+	cursor: pointer;
+	transition: background 0.15s, color 0.15s;
+}
+
+.player-avatar-change:hover {
+	background: rgba(74, 144, 217, 0.2);
+	color: #ffffff;
 }
 
 .name-input input {
@@ -288,7 +342,7 @@ h1.ui.header {
 	background: linear-gradient(180deg, #161848 0%, #0d0f2e 100%);
 	border-top: 2px solid rgba(74, 144, 217, 0.3);
 	border-radius: 0 0 10px 10px;
-	padding: 14px 20px;
+	padding: 14px 20px 22px;
 }
 
 .ui.modal > .actions .ui.button.primary {
@@ -445,7 +499,104 @@ h1.ui.header {
 		inset -1px -1px 5px rgba(200, 140, 50, 0.3);
 }
 
-/* ---- Game History / Leaderboard tabs ---- */
+/* ---- Game History / Leaderboard ---- */
+
+/* Mobile cards — hidden on desktop */
+.history-cards {
+	display: none;
+}
+
+.history-card {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 12px;
+	border-bottom: 1px solid rgba(74, 144, 217, 0.15);
+	font-family: 'Nunito', 'Arial', sans-serif;
+	font-size: 0.95rem;
+}
+
+.history-card:last-child {
+	border-bottom: none;
+}
+
+.history-card-date {
+	color: #a8d4ff;
+	flex: 1;
+	font-size: 0.85rem;
+}
+
+.history-card-result {
+	flex: 2;
+	color: #cce4ff;
+}
+
+.history-card-score {
+	color: #ffe066;
+	font-weight: 800;
+	white-space: nowrap;
+}
+
+.leaderboard-card {
+	display: flex;
+	flex-direction: column;
+	padding: 8px 12px;
+	border-bottom: 1px solid rgba(74, 144, 217, 0.15);
+	font-family: 'Nunito', 'Arial', sans-serif;
+}
+
+.leaderboard-card:last-child {
+	border-bottom: none;
+}
+
+.leaderboard-card.is-me {
+	background: rgba(74, 144, 217, 0.12);
+	border-radius: 6px;
+}
+
+.leaderboard-card-top {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 4px;
+}
+
+.leaderboard-card-rank {
+	font-size: 1.1rem;
+	width: 26px;
+	text-align: center;
+	flex-shrink: 0;
+}
+
+.leaderboard-card-name {
+	flex: 1;
+	color: #cce4ff;
+	font-weight: 700;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.leaderboard-card.is-me .leaderboard-card-name {
+	color: #ffe066;
+}
+
+.leaderboard-card-you {
+	color: #a8d4ff;
+	font-weight: 400;
+	font-size: 0.8em;
+	margin-left: 5px;
+}
+
+.leaderboard-card-stats {
+	display: flex;
+	gap: 0;
+	justify-content: space-between;
+	padding-left: 34px;
+	font-size: 0.82rem;
+	color: #ffe066;
+	font-weight: 800;
+}
 
 .history-tab-bar {
 	display: flex;
@@ -484,6 +635,43 @@ h1.ui.header {
 		width: 100%;
 		margin: 0 !important;
 	}
+
+	.ui.modal.history-modal > .actions {
+		padding-bottom: max(28px, env(safe-area-inset-bottom, 28px)) !important;
+	}
+
+	/* Full-screen history/leaderboard modal on mobile */
+	.ui.modal.history-modal {
+		width: 100% !important;
+		max-width: 100% !important;
+		margin: 0 !important;
+		top: 0 !important;
+		left: 0 !important;
+		border-radius: 0 !important;
+		border: none !important;
+		height: 100dvh;
+		display: flex !important;
+		flex-direction: column;
+	}
+
+	.ui.modal.history-modal > .content {
+		flex: 1;
+		overflow-y: auto;
+		padding: 0 !important;
+	}
+
+	.ui.modal.history-modal > .content > div:last-child {
+		padding: 12px 10px !important;
+	}
+
+	/* Switch to cards, hide table */
+	.history-desktop-table {
+		display: none !important;
+	}
+
+	.history-cards {
+		display: block;
+	}
 }
 
 @media (max-width: 920px) {
@@ -516,6 +704,18 @@ h1.ui.header {
 		padding: 8px 10px;
 		font-size: 0.8rem;
 		letter-spacing: 0;
+	}
+
+	.player-name-badge {
+		display: block;
+		position: fixed;
+		top: 10px;
+		right: 12px;
+		z-index: 1000;
+	}
+
+	.player-name-desktop {
+		display: none !important;
 	}
 
 	/* Scale is applied via inline style computed in GameBoard.jsx.

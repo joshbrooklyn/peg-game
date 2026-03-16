@@ -7,6 +7,7 @@ import GameOverPanel from './GameOverPanel';
 import HowToPlayModal from './HowToPlayModal';
 import PlayerNameModal from './PlayerNameModal';
 import GameHistoryModal from './GameHistoryModal';
+import PlayerAvatar from './PlayerAvatar';
 import { Container, Header } from 'semantic-ui-react';
 
 const ANIMATION_DURATION = 420; // ms
@@ -292,6 +293,11 @@ handleClick(i) {
 
 		return (
 			<Container>
+				{playerName && (
+					<div className="player-name-badge">
+						<PlayerAvatar playerName={playerName} onChangeName={() => this.setState({ showNameModal: true })} />
+					</div>
+				)}
 				<Header as='h1'>Peg Game</Header>
 				<Container className="game-container">
 					<MenuBar
