@@ -141,6 +141,58 @@ h1.ui.header {
 	border-right: 1px solid rgba(74, 144, 217, 0.3);
 }
 
+/* ---- Player name ---- */
+
+.player-name-item {
+	cursor: default !important;
+	color: #ffe066 !important;
+}
+
+.player-name-item:hover {
+	background: transparent !important;
+	color: #ffe066 !important;
+}
+
+.player-name {
+	font-family: 'Fredoka One', 'Georgia', cursive;
+	color: #ffe066;
+	letter-spacing: 1px;
+	margin-right: 8px;
+}
+
+.change-name-link {
+	font-size: 0.72rem;
+	color: rgba(168, 212, 255, 0.6);
+	cursor: pointer;
+	text-transform: lowercase;
+	letter-spacing: 0.5px;
+	transition: color 0.15s;
+}
+
+.change-name-link:hover {
+	color: #a8d4ff;
+}
+
+.name-input input {
+	background: rgba(255, 255, 255, 0.07) !important;
+	border: 2px solid #4a90d9 !important;
+	border-radius: 8px !important;
+	color: #cce4ff !important;
+	font-family: 'Nunito', 'Arial', sans-serif !important;
+	font-size: 1.1rem !important;
+	padding: 10px 14px !important;
+}
+
+.name-input input::placeholder {
+	color: rgba(168, 212, 255, 0.4) !important;
+}
+
+.name-input input:focus {
+	border-color: #7ab8ff !important;
+	outline: none !important;
+	box-shadow: 0 0 0 2px rgba(74, 144, 217, 0.25) !important;
+}
+
 /* ---- Jump animation ---- */
 
 @keyframes peg-jump {
@@ -393,7 +445,46 @@ h1.ui.header {
 		inset -1px -1px 5px rgba(200, 140, 50, 0.3);
 }
 
+/* ---- Game History / Leaderboard tabs ---- */
+
+.history-tab-bar {
+	display: flex;
+	border-bottom: 2px solid rgba(74, 144, 217, 0.3);
+}
+
+.history-tab-btn {
+	flex: 1;
+	background: transparent;
+	border: none;
+	border-bottom: 3px solid transparent;
+	margin-bottom: -2px;
+	padding: 14px 0;
+	color: rgba(168, 212, 255, 0.6);
+	font-family: 'Nunito', 'Arial', sans-serif;
+	font-weight: 800;
+	font-size: 0.97rem;
+	letter-spacing: 0.5px;
+	cursor: pointer;
+	transition: color 0.15s, border-color 0.15s;
+}
+
+.history-tab-btn:hover {
+	color: #a8d4ff;
+}
+
+.history-tab-btn.active {
+	color: #ffe066;
+	border-bottom-color: #ffe066;
+}
+
 /* ---- Mobile responsive ---- */
+
+@media (max-width: 480px) {
+	.ui.modal > .actions .ui.button {
+		width: 100%;
+		margin: 0 !important;
+	}
+}
 
 @media (max-width: 920px) {
 	body {

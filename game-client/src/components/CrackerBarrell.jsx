@@ -5,6 +5,8 @@ import GameBoard from './GameBoard';
 import MenuBar from './MenuBar';
 import GameOverPanel from './GameOverPanel';
 import HowToPlayModal from './HowToPlayModal';
+import PlayerNameModal from './PlayerNameModal';
+import GameHistoryModal from './GameHistoryModal';
 import { Container, Header } from 'semantic-ui-react';
 
 const ANIMATION_DURATION = 420; // ms
@@ -40,6 +42,9 @@ export default class CrackerBarrell extends React.Component {
 		let pegLocations = this.getPegLocations(this.props.emptyPeg);
 		let selectablePegs = this.getSelectablePegs(pegLocations);
 
+		const savedName = localStorage.getItem('playerName');
+		const savedUserId = localStorage.getItem('userId');
+
 		this.state = {
 			history: [{
 				selectedPeg: null,
@@ -52,7 +57,11 @@ export default class CrackerBarrell extends React.Component {
 			pegsRemaining: null,
 			oldGames: null,
 			showHelp: false,
+			showHistory: false,
 			animatingJump: null,
+			playerName: savedName || '',
+			userId: savedUserId ? parseInt(savedUserId) : null,
+			showNameModal: !savedName,
 		};
 	}
 
@@ -149,6 +158,34 @@ export default class CrackerBarrell extends React.Component {
 		this.setState({ showHelp: false });
 	}
 
+	showHistory() {
+		this.setState({ showHistory: true });
+	}
+
+	hideHistory() {
+		this.setState({ showHistory: false });
+	}
+
+	saveName(name, userId) {
+		localStorage.setItem('playerName', name);
+		localStorage.setItem('userId', userId);
+		this.setState({ playerName: name, userId, showNameModal: false });
+	}
+
+	cancelNameModal() {
+		this.setState({ showNameModal: false });
+	}
+
+	postGameHistory(score) {
+		const { userId } = this.state;
+		if (!userId) return;
+		fetch(`${process.env.REACT_APP_API_URL}/api/gamehistory`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ userId, score }),
+		});
+	}
+
 handleClick(i) {
 		if (this.state.animatingJump) return;
 
@@ -196,6 +233,8 @@ handleClick(i) {
 					if (newSelectablePegs.indexOf(1) === -1) {
 						newPegsRemaining = newPegLocations.filter(itm => itm !== 0).length;
 						newGameOver = true;
+						const score = newPegsRemaining === 1 ? 5 : newPegsRemaining === 2 ? 3 : newPegsRemaining === 3 ? 1 : 0;
+						this.postGameHistory(score);
 					}
 
 					// Calculate pixel offset for the arc animation
@@ -249,6 +288,7 @@ handleClick(i) {
 		const pegLocations = current.pegLocations;
 		const selectablePegs = current.selectablePegs;
 		const selectableHoles = current.selectableHoles;
+		const { playerName, showNameModal } = this.state;
 
 		return (
 			<Container>
@@ -258,10 +298,26 @@ handleClick(i) {
 						resetGameHandler={this.resetGame.bind(this)}
 						undoMoveHandler={this.undoMove.bind(this)}
 						showHelpHandler={this.showHelp.bind(this)}
+						showHistoryHandler={this.showHistory.bind(this)}
+						playerName={playerName}
+						onChangeNameHandler={() => this.setState({ showNameModal: true })}
 					/>
 					<HowToPlayModal
 						open={showHelp}
 						onClose={this.hideHelp.bind(this)}
+					/>
+					<PlayerNameModal
+						open={showNameModal}
+						isFirstVisit={!playerName}
+						currentName={playerName}
+						onSave={this.saveName.bind(this)}
+						onCancel={this.cancelNameModal.bind(this)}
+					/>
+					<GameHistoryModal
+						open={this.state.showHistory}
+						onClose={this.hideHistory.bind(this)}
+						playerName={playerName}
+						userId={this.state.userId}
 					/>
 					<GameBoard
 						pegLocations={pegLocations}

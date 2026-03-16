@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet --list-sdks)",
+      "Read(//c/Users/Josh/Documents/GIT/PegGameAPI/**)",
+      "Bash(dotnet new:*)",
+      "Bash(dotnet sln:*)",
+      "Bash(dotnet add:*)",
+      "Bash(rm \"C:/Users/Josh/Documents/GIT/PegGameAPI/PegGameAPI/Controllers/WeatherForecastController.cs\" \"C:/Users/Josh/Documents/GIT/PegGameAPI/PegGameAPI/WeatherForecast.cs\")",
+      "Bash(mkdir -p \"C:/Users/Josh/Documents/GIT/PegGameAPI/PegGameAPI/Controllers\" \"C:/Users/Josh/Documents/GIT/PegGameAPI/PegGameAPI/Entities\" \"C:/Users/Josh/Documents/GIT/PegGameAPI/PegGameAPI/Models\")",
+      "Bash(dotnet build:*)",
+      "Bash(mysql --version)",
+      "Bash(where mysql:*)",
+      "Read(//c/Program Files/MySQL/**)",
+      "Bash(\"C:/Program Files/MySQL/MySQL Server 8.0/bin/mysql\" --version)",
+      "Bash(\"C:/Program Files/MySQL/MySQL Server 8.0/bin/mysql\" -u josh -p'$J0shH0we$' -e \"SELECT 1;\")",
+      "Bash(\"C:/Program Files/MySQL/MySQL Server 8.0/bin/mysql\" -u root -p'$J0shH0we$' -e \"SELECT 1;\")",
+      "mcp__do-droplets__droplet-list",
+      "Bash(ssh josh@157.230.211.172 \"mysql --version 2>/dev/null || echo ''mysql not found''\")",
+      "Bash(ssh josh@157.230.211.172 \"sudo cat /etc/systemd/system/gameframe.service\")",
+      "Bash(ssh josh@157.230.211.172 \"mkdir -p /home/josh/DotNetWebServices/PegGameAPI\")"
+    ]
+  }
+}
